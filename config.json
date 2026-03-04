@@ -1,1 +1,7 @@
-
+{
+  "server_url": "http://example.com:8080",
+  "username": "testuser",
+  "password": "123456",
+  "app_name": "Hakim IPTV",
+  "version": "1.0.0"
+}
