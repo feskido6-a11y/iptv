@@ -1,0 +1,11 @@
+{
+  "name": "iptv-app",
+  "version": "1.0.0",
+  "scripts": {
+    "import": "node import.js playlist.m3u",
+    "generate": "node generate.js"
+  },
+  "dependencies": {
+    "mongoose": "^8.0.0"
+  }
+}
