@@ -1,1 +1,35 @@
 
+name: 📺 Generate M3U Playlist
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: npm install mongoose
+
+      - name: Generate playlist.m3u
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: node generate.js
+
+      - name: Commit & Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add playlist.m3u
+          git diff --staged --quiet || git commit -m "🔄 Update playlist [$(date +'%Y-%m-%d %H:%M')]"
+          git push
