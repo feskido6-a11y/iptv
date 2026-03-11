@@ -4,8 +4,6 @@ on:
   schedule:
     - cron: "0 */6 * * *"
   workflow_dispatch:
-  push:
-    branches: [main]
 
 jobs:
   generate:
@@ -17,10 +15,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install deps
         run: npm install mongoose
@@ -34,8 +33,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
           git add playlist.m3u
-          git diff --staged --quiet && echo "✅ No changes" && exit 0
+          if git diff --staged --quiet; then
+            echo "✅ No changes"
+            exit 0
+          fi
           git commit -m "🔄 Update playlist [$(date +'%Y-%m-%d %H:%M')]"
-          git push origin main
+          git push --force-with-lease origin main
